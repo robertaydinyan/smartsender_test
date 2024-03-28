@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Channel index{% endblock %}
+
+{% block body %}
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <div class="table-title">
+                <h1>Channels</h1>
+                <a href="{{ path('app_channel_new') }}">Create new</a>
+            </div>
+            <div class="table">
+                <div class="row header">
+                    <div class="cell">
+                        Id
+                    </div>
+                    <div class="cell">
+                        Name
+                    </div>
+                    <div class="cell">
+                        Enabled
+                    </div>
+                    <div class="cell">
+                        Email
+                    </div>
+                    <div class="cell">
+                        Sms
+                    </div>
+                    <div class="cell">
+                        Webpush
+                    </div>
+                    <div class="cell">
+                        Telegram
+                    </div>
+                    <div class="cell">
+                        Viber
+                    </div>
+                    <div class="cell">
+                        customers
+                    </div>
+                    <div class="cell">
+                        actions
+                    </div>
+                </div>
+                {% for channel in channels %}
+                    <div class="row">
+                        <div class="cell" data-title="ID">
+                            {{ channel.id }}
+                        </div>
+                        <div class="cell" data-title="Name">
+                            {{ channel.name }}
+                        </div>
+                        <div class="cell" data-title="Enabled">
+                            {% if channel.enabled == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="Email">
+                            {% if channel.email == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="SMS">
+                            {% if channel.sms == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="Webpush">
+                            {% if channel.webpush == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="Telegram">
+                            {% if channel.telegram == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="Viber">
+                            {% if channel.viber == 1 %}
+                                <input type="checkbox" checked disabled/>
+                            {% endif %}
+                        </div>
+                        <div class="cell" data-title="Customers">
+                        </div>
+                        <div class="cell">
+                            <a href="{{ path('app_channel_show', {'id': channel.id}) }}">show</a>
+                            <a href="{{ path('app_channel_edit', {'id': channel.id}) }}">edit</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="cell">
+                        <div>no records found</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

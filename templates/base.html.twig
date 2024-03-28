@@ -10,8 +10,17 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="top-menu">
+            <a href="/customer">Customers</a>
+            <a href="/channel">Channel</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
     </body>
 </html>

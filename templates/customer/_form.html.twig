@@ -1,0 +1,8 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+
+    <div class="form-events">
+        <button class="btn save">{{ button_label|default('Save') }}</button>
+        <a href="{{ path('app_customer_index') }}" class="back">back to list</a>
+    </div>
+{{ form_end(form) }}
