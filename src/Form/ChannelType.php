@@ -42,7 +42,7 @@ class ChannelType extends AbstractType
             ->add('viber', CheckboxType::class, [
                 'required' => false
             ])
-            ->add('channelCustomers', EntityType::class, [
+            ->add('customers', EntityType::class, [
                 'class' => Customer::class,
                 'choice_label' => 'name',
                 'multiple' => true,

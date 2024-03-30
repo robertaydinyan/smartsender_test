@@ -15,12 +15,14 @@
     </head>
     <body>
         <div class="top-menu">
-            <a href="/customer">Customers</a>
-            <a href="/channel">Channel</a>
-            <a href="#contact">Contact</a>
+            <a href="{{ path('app_customer_index') }}">Customers</a>
+            <a href="{{ path('app_channel_index') }}">Channels</a>
+            <a href="{{ path('app_message_index') }}">Message</a>
         </div>
         <div class="container">
             {% block body %}{% endblock %}
         </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </body>
 </html>

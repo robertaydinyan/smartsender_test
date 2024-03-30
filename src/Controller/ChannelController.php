@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Entity\ChannelCustomers;
+use App\Entity\Customer;
 use App\Form\ChannelType;
 use App\Repository\ChannelRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,11 +19,10 @@ class ChannelController extends AbstractController
     #[Route('/', name: 'app_channel_index', methods: ['GET'])]
     public function index(ChannelRepository $channelRepository): Response
     {
-        echo "<pre>";
-        $channel = $channelRepository->findAll()[0];
-        var_dump($channel->getCustomers());die();
+        $channels = $channelRepository->findAll();
+//        foreach (i in channel.customers)
         return $this->render('channel/index.html.twig', [
-            'channels' => $channelRepository->findAll(),
+            'channels' => $channels,
         ]);
     }
 
@@ -32,19 +32,27 @@ class ChannelController extends AbstractController
         $channel = new Channel();
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($channel);
-            $entityManager->flush();
 
-            $selectedChannelCustomers = $form->get('channelCustomers')->getData();
-            foreach ($selectedChannelCustomers as $channelCustomer) {
-                $channelCustomers = new ChannelCustomers();
-                $channelCustomers->setCustomerId($channelCustomer->getId());
-                $channelCustomers->setChannelId($channel->getId());
-                $entityManager->persist($channelCustomers);
-            }
             $entityManager->flush();
+            $entityManager->persist($channel);
+
+            $customerIds = $form->get('customers')->getData();
+            foreach ($customerIds as $customerId) {
+                $customer = new ChannelCustomers(); // Create a new ChannelCustomer instance
+
+                $customerEntity = $entityManager->getRepository(Customer::class)->find($customerId);
+                $customer->setCustomer($customerEntity);
+                $customer->setChannel($channel);
+
+                $entityManager->persist($customer); // Persist the new ChannelCustomer entity
+
+                $entityManager->flush();
+                $channel->addChannelCustomer($customer); // Add the new ChannelCustomer to the Channel entity
+            }
+
+//            $entityManager->flush();
+//            $entityManager->persist($channel);
 
             return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);
         }

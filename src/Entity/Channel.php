@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use App\Constants\FormOptions;
 use App\Repository\ChannelRepository;
-use Cassandra\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Form\FormEvent;
 
 #[ORM\Entity(repositoryClass: ChannelRepository::class)]
 class Channel
@@ -41,34 +43,30 @@ class Channel
      */
     private $customers;
 
+    #[ORM\OneToMany(targetEntity: ChannelCustomers::class, mappedBy: 'channel', orphanRemoval: true)]
+    private Collection $channelCustomers;
+
+    #[ORM\OneToMany(targetEntity: MessageHistory::class, mappedBy: 'channel', orphanRemoval: true)]
+    private Collection $messageHistories;
+
+    #[ORM\OneToOne(mappedBy: 'channel', cascade: ['persist', 'remove'])]
+
     public function __construct()
     {
-        $this->customers = new ArrayCollection();
+        $this->channelCustomers = new ArrayCollection();
+        $this->messageHistories = new ArrayCollection();
     }
 
-    /**
-     * @return Collection|Customer[]
-     */
-    public function getCustomers(): Collection
+    public function getCustomers()
     {
-        return $this->customers;
+        return $this->channelCustomers->map(function($channelCustomer) {
+            return $channelCustomer->getCustomer();
+        })->toArray();
     }
 
-    public function addCustomer(Customer $customer): self
+    public function setCustomers($customers)
     {
-        if (!$this->customers->contains($customer)) {
-            $this->customers[] = $customer;
-            $customer->addChannel($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCustomer(Customer $customer): self
-    {
-        if ($this->customers->removeElement($customer)) {
-            $customer->removeChannel($this);
-        }
+        $this->customers = $customers;
 
         return $this;
     }
@@ -160,5 +158,90 @@ class Channel
         $this->viber = $viber;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ChannelCustomers>
+     */
+    public function getChannelCustomers(): Collection
+    {
+        return $this->channelCustomers;
+    }
+
+    public function addChannelCustomer(ChannelCustomers $channelCustomer): static
+    {
+        if (!$this->channelCustomers->contains($channelCustomer)) {
+            $this->channelCustomers->add($channelCustomer);
+            $channelCustomer->setChannel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChannelCustomer(ChannelCustomers $channelCustomer): static
+    {
+        if ($this->channelCustomers->removeElement($channelCustomer)) {
+            // set the owning side to null (unless already changed)
+            if ($channelCustomer->getChannel() === $this) {
+                $channelCustomer->setChannel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MessageHistory>
+     */
+    public function getMessageHistories(): Collection
+    {
+        return $this->messageHistories;
+    }
+
+    public function addMessageHistory(MessageHistory $messageHistory): static
+    {
+        if (!$this->messageHistories->contains($messageHistory)) {
+            $this->messageHistories->add($messageHistory);
+            $messageHistory->setChannel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessageHistory(MessageHistory $messageHistory): static
+    {
+        if ($this->messageHistories->removeElement($messageHistory)) {
+            // set the owning side to null (unless already changed)
+            if ($messageHistory->getChannel() === $this) {
+                $messageHistory->setChannel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getTypes() {
+        $types = FormOptions::MESSAGE_OPTIONS;
+        if ($this->email != 1) {
+            unset($types[0]);
+        }
+
+        if ($this->sms != 1) {
+            unset($types[1]);
+        }
+
+        if ($this->webpush != 1) {
+            unset($types[2]);
+        }
+
+        if ($this->telegram != 1) {
+            unset($types[3]);
+        }
+
+        if ($this->viber != 1) {
+            unset($types[4]);
+        }
+        return $types;
+
     }
 }

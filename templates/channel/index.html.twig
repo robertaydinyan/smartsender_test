@@ -81,6 +81,11 @@
                             {% endif %}
                         </div>
                         <div class="cell" data-title="Customers">
+                            {% if channel.channelCustomers %}
+                                {% for customer in channel.channelCustomers %}
+                                    <p>{{ customer.customer.name }}</p>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                         <div class="cell">
                             <a href="{{ path('app_channel_show', {'id': channel.id}) }}">show</a>

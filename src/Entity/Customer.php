@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CustomerRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
@@ -27,40 +27,15 @@ class Customer
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Channel", inversedBy="customers")
-     * @ORM\JoinTable(name="customer_channel")
-     */
-    private $channels;
+    #[ORM\OneToMany(targetEntity: ChannelCustomers::class, mappedBy: 'customer', orphanRemoval: true)]
+    private Collection $channelCustomers;
+
 
     public function __construct()
     {
-        $this->channels = new ArrayCollection();
+        $this->channelCustomers = new ArrayCollection();
     }
 
-    /**
-     * @return Collection|Channel[]
-     */
-    public function getChannels(): Collection
-    {
-        return $this->channels;
-    }
-
-    public function addChannel(Channel $channel): self
-    {
-        if (!$this->channels->contains($channel)) {
-            $this->channels[] = $channel;
-        }
-
-        return $this;
-    }
-
-    public function removeChannel(Channel $channel): self
-    {
-        $this->channels->removeElement($channel);
-
-        return $this;
-    }
     public function getId(): ?int
     {
         return $this->id;
@@ -110,6 +85,36 @@ class Customer
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ChannelCustomers>
+     */
+    public function getChannelCustomers(): Collection
+    {
+        return $this->channelCustomers;
+    }
+
+    public function addChannelCustomer(ChannelCustomers $channelCustomer): static
+    {
+        if (!$this->channelCustomers->contains($channelCustomer)) {
+            $this->channelCustomers->add($channelCustomer);
+            $channelCustomer->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChannelCustomer(ChannelCustomers $channelCustomer): static
+    {
+        if ($this->channelCustomers->removeElement($channelCustomer)) {
+            // set the owning side to null (unless already changed)
+            if ($channelCustomer->getCustomer() === $this) {
+                $channelCustomer->setCustomer(null);
+            }
+        }
 
         return $this;
     }

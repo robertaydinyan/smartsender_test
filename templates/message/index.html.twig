@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MessageHistory index{% endblock %}
+
+{% block body %}
+    <h1>Message History</h1>
+
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <div class="table-title">
+                <h1>Message history</h1>
+                <a href="{{ path('app_message_new') }}" class="create">Compose message</a>
+            </div>
+            <div class="table">
+                <div class="row header">
+                    <div class="cell">
+                        #
+                    </div>
+                    <div class="cell">
+                        Title
+                    </div>
+                    <div class="cell">
+                        Message
+                    </div>
+                    <div class="cell">
+                        Created at
+                    </div>
+                    <div class="cell">
+                        Type
+                    </div>
+                </div>
+                {% for message in message_histories %}
+                    <div class="row">
+                        <div class="cell" data-title="ID">
+                            {{ message.id }}
+                        </div>
+                        <div class="cell" data-title="Title">
+                            {{ message.title }}
+                        </div>
+                        <div class="cell" data-title="Message">
+                            {{ message.message }}
+                        </div>
+                        <div class="cell" data-title="Date">
+                            {{ message.createdAt ? message.createdAt|date('Y-m-d') : '' }}
+                        </div>
+                        <div class="cell" data-title="Type">
+                            {{ message.getTypeFormated() }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="cell">
+                        <div>no records found</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

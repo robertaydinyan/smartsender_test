@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customer index{% endblock %}
+
+{% block body %}
+
+    <section id="how-it-works">
+        <h2>How It Works</h2>
+        <p>This page provides a platform for sending messages through channels to customers.</p>
+        <p>To use the page:</p>
+        <ol>
+            <li>Navigate to the <a href="/customer">Customers</a> section to add new customers. Upon creation, a welcome message will be sent to the customer.</li>
+            <li>Move to the <a href="/channel">Channels</a> section to create new channels for sending messages.</li>
+            <li>In the <a href="/message">Messages</a> section, you can use the command line to send messages to specific channels. The syntax for sending messages is provided.</li>
+            <li>To check if messages were sent successfully, you can inspect the log file located in <code>/var/log/messages.log</code>.</li>
+        </ol>
+    </section>
+
+    <section id="create-customers">
+        <h2>Create Customers</h2>
+        <p>When you create a new customer, it sends a welcome message.</p>
+        <!-- Your customer creation form goes here -->
+    </section>
+
+    <section id="create-channels">
+        <h2>Create Channels</h2>
+        <p>Create channels here.</p>
+        <!-- Your channel creation form goes here -->
+    </section>
+
+    <section id="send-messages">
+        <h2>Send Messages</h2>
+        <p>You can send messages using the command line.</p>
+        <p>To send a message, use the following syntax:</p>
+        <pre>php bin/console app:send-message &lt;channelID&gt; &lt;type&gt; &lt;title&gt; &lt;message&gt;</pre>
+        <p>To check if messages were sent, you can check the file located in <code>/var/log/messages.log</code>.</p>
+    </section>
+
+    <footer>
+        <p>Thank you for visiting!</p>
+    </footer>
+    <title>About Page - How It Works</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        section {
+            padding: 20px;
+        }
+    </style>
+{% endblock %}
